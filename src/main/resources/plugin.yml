@@ -1,0 +1,6 @@
+name: jk_real_estate
+version: '${project.version}'
+main: jiekie.RealEstatePlugin
+api-version: '1.20'
+authors: [Jiekie]
+description: 부동산 플러그인
