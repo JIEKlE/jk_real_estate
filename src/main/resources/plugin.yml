@@ -4,3 +4,16 @@ main: jiekie.RealEstatePlugin
 api-version: '1.20'
 authors: [Jiekie]
 description: 부동산 플러그인
+depend: [jk_economy, WorldEdit, WorldGuard]
+softdepend: [jk_multi_world]
+commands:
+  부동산:
+    description: 부동산 관련 명령어
+    usage: /부동산
+    tab-completer: jiekie.completer.RealEstateTabCompleter
+  계약서:
+    description: 부동산 계약서 관련 명령어
+    usage: /계약서
+    tab-completer: jiekie.completer.ContractTabCompleter
+    permission: jk.contract.command
+    permission-message: ''
