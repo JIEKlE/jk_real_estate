@@ -41,6 +41,10 @@ public class RealEstateCommand implements CommandExecutor {
         commandMap.put("화로개수설정", this::setMaxFurnaceCount);
         commandMap.put("정보", this::showRegionInfo);
         commandMap.put("도움말", ctx -> ChatUtil.realEstateCommandList(ctx.sender()));
+
+        // console only
+        commandMap.put("구매", this::buyRealEstate);
+        commandMap.put("판매", this::sellRealEstate);
     }
 
     @Override
@@ -62,10 +66,11 @@ public class RealEstateCommand implements CommandExecutor {
 
     private void open(CommandContext context) {
         CommandSender sender = context.sender();
-        String[] args = context.args();
 
         Player player = asPlayer(sender);
         if(player == null) return;
+
+        plugin.getRealEstateManager().open(player, 1);
     }
 
     private void setRegion(CommandContext context) {
@@ -325,6 +330,28 @@ public class RealEstateCommand implements CommandExecutor {
             if(sender instanceof Player player)
                 SoundUtil.playNoteBlockBell(player);
 
+        } catch (RealEstateException e) {
+            ChatUtil.showMessage(sender, e.getMessage());
+        }
+    }
+
+    private void buyRealEstate(CommandContext context) {
+        CommandSender sender = context.sender();
+        String[] args = context.args();
+
+        try {
+            plugin.getRealEstateManager().buyRegion(args[1], args[2]);
+        } catch (RealEstateException e) {
+            ChatUtil.showMessage(sender, e.getMessage());
+        }
+    }
+
+    private void sellRealEstate(CommandContext context) {
+        CommandSender sender = context.sender();
+        String[] args = context.args();
+
+        try {
+            plugin.getRealEstateManager().sellRegion(args[1], args[2]);
         } catch (RealEstateException e) {
             ChatUtil.showMessage(sender, e.getMessage());
         }

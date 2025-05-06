@@ -1,12 +1,10 @@
 package jiekie.model;
 
-import com.sk89q.worldedit.math.BlockVector3;
-
 import java.util.UUID;
 
 public class RealEstate {
-    private String name;
-    private String worldName;
+    private final String name;
+    private final String worldName;
     private int price;
     private UUID ownerUuid;
     private String ownerName;
@@ -27,16 +25,8 @@ public class RealEstate {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getWorldName() {
         return worldName;
-    }
-
-    public void setWorldName(String worldName) {
-        this.worldName = worldName;
     }
 
     public int getPrice() {

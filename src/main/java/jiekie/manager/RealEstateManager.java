@@ -5,19 +5,26 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import jiekie.RealEstatePlugin;
+import jiekie.api.MoneyAPI;
 import jiekie.api.NicknameAPI;
 import jiekie.exception.RealEstateException;
+import jiekie.model.PlayerNameData;
 import jiekie.model.RealEstate;
+import jiekie.model.RealEstateInventoryHolder;
 import jiekie.util.ChatUtil;
+import jiekie.util.ItemUtil;
+import jiekie.util.NumberUtil;
 import jiekie.util.SoundUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,6 +95,50 @@ public class RealEstateManager {
     }
 
     /* function */
+    public void open(Player player, int page) {
+        int contractsPerPage = 45;
+        int total = realEstateMap.size();
+        int maxPage = (int) Math.ceil((double)total / contractsPerPage);
+        if(page < 1) page = 1;
+        if(page > maxPage) page = maxPage;
+
+        int start = (page - 1) * contractsPerPage;
+        int end = Math.min(start + contractsPerPage, total);
+
+        String holderName = "부동산";
+        RealEstateInventoryHolder holder = new RealEstateInventoryHolder(holderName, page);
+
+        String chestName = "";
+        int size = 54;
+        Inventory inventory = Bukkit.createInventory(holder, size, chestName);
+
+        List<Map.Entry<String, RealEstate>> sortedRealEstates = realEstateMap.entrySet()
+                                                                            .stream()
+                                                                            .sorted(Map.Entry.comparingByKey())
+                                                                            .toList();
+        for(int i = start, slot = 0 ; i < end ; i++, slot++) {
+            RealEstate realEstate = sortedRealEstates.get(i).getValue();
+            inventory.setItem(slot, plugin.getContractManager().getContract(realEstate));
+        }
+
+        if(page > 1)
+            inventory.setItem(45, createControlItem(ChatColor.YELLOW + "이전 페이지", 190));
+
+        if(page < maxPage)
+            inventory.setItem(53, createControlItem(ChatColor.YELLOW + "다음 페이지", 191));
+
+        player.openInventory(inventory);
+    }
+
+    private ItemStack createControlItem(String name, int customModelData) {
+        ItemStack itemStack = new ItemStack(Material.PAPER);
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName(name);
+        meta.setCustomModelData(customModelData);
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
     public void setRegion(World world, String name, String priceString) throws RealEstateException {
         if(!isRegionExist(name))
             createRegion(world, name, priceString);
@@ -103,10 +154,11 @@ public class RealEstateManager {
         if(!isRegionExistInWorldGuard(world, name))
             throw new RealEstateException(ChatUtil.NOT_WORLD_GUARD_REGION);
 
-        RealEstate realEstate = new RealEstate(name, world.getName(), getMoney(priceString));
+        String worldName = world.getName();
+        RealEstate realEstate = new RealEstate(name, worldName, getMoney(priceString));
         realEstateMap.put(name, realEstate);
 
-        String prefix = "rg flag " + name + " ";
+        String prefix = "rg flag -w " + worldName + " " + name + " ";
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), prefix + "use allow");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), prefix + "build deny");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), prefix + "chest-access deny");
@@ -145,10 +197,11 @@ public class RealEstateManager {
         RealEstate realEstate = getRealEstateOrThrow(name);
         
         // take permission
+        String worldName = realEstate.getWorldName();
         UUID beforeOwnerUuid = realEstate.getOwnerUuid();
         if(beforeOwnerUuid != null) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(beforeOwnerUuid);
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg removeowner " + name + " " + offlinePlayer.getName());
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg removeowner -w " + worldName + " " + name + " " + offlinePlayer.getName());
 
             // feedback
             Player beforeOwner = Bukkit.getPlayer(beforeOwnerUuid);
@@ -161,8 +214,10 @@ public class RealEstateManager {
         // give permission
         realEstate.setOwnerUuid(player.getUniqueId());
         realEstate.setOwnerName(playerName);
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg addowner " + name + " " + player.getName());
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg flag " + name + " use deny");
+
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg addowner -w " + worldName + " " + name + " " + player.getName());
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg flag -w " + worldName + " " + name + " use -g nonowners deny");
+
         ChatUtil.regionIsGiven(player, name);
         SoundUtil.playNoteBlockBell(player);
     }
@@ -178,13 +233,108 @@ public class RealEstateManager {
         realEstate.setOwnerName(null);
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(ownerUuid);
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg removeowner " + name + " " + offlinePlayer.getName());
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg flag " + name + " use allow");
+        String worldName = realEstate.getWorldName();
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg removeowner -w " + worldName + " " + name + " " + offlinePlayer.getName());
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg flag -w " + worldName + " " + name + " use allow");
 
         Player player = Bukkit.getPlayer(ownerUuid);
         if(player != null) {
             ChatUtil.regionIsTaken(player, name);
             SoundUtil.playNoteBlockBell(player);
+        }
+    }
+
+    public void buyRegion(String name, String playerName) throws RealEstateException {
+        Player player = Bukkit.getPlayer(playerName);
+        if(player == null)
+            throw new RealEstateException(ChatUtil.PLAYER_DOES_NOT_EXIST);
+
+        RealEstate realEstate = getRealEstateOrThrow(name);
+        if(realEstate.getOwnerUuid() != null) {
+            ChatUtil.showMessage(player, ChatUtil.SOLD);
+            return;
+        }
+
+        UUID uuid = player.getUniqueId();
+        if(!canOwnMoreRealEstate(uuid)) {
+            ChatUtil.showMessage(player, ChatUtil.PLAYER_CAN_NOT_OWN_MORE_REAL_ESTATE);
+            return;
+        }
+
+        int price = realEstate.getPrice();
+        if(price <= 0) {
+            ChatUtil.showMessage(player, ChatUtil.CAN_NOT_BUY);
+            return;
+        }
+
+        int money = MoneyAPI.getInstance().getPlayerMoney(uuid);
+        if(money < price) {
+            ChatUtil.showMessage(player, ChatUtil.NOT_ENOUGH_MONEY);
+            return;
+        }
+
+        // set owner
+        PlayerNameData playerNameData = NicknameAPI.getInstance().getPlayerNameData(uuid);
+        realEstate.setOwnerUuid(uuid);
+        realEstate.setOwnerName(playerNameData == null ? playerName : playerNameData.getNickname());
+
+        // set permission
+        String worldName = realEstate.getWorldName();
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg addowner -w " + worldName + " " + name + " " + playerName);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg flag -w " + worldName + " " + name + " use -g nonowners deny");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "돈 차감 " + price + " " + playerName);
+
+        // remove contract
+        removeContract(player, realEstate);
+
+        // send feedback
+        ChatUtil.buyRegion(player, name, NumberUtil.getFormattedMoney(price));
+        SoundUtil.playNoteBlockBell(player);
+    }
+
+    public void sellRegion(String name, String playerName) throws RealEstateException {
+        Player player = Bukkit.getPlayer(playerName);
+        if(player == null)
+            throw new RealEstateException(ChatUtil.PLAYER_DOES_NOT_EXIST);
+
+        RealEstate realEstate = getRealEstateOrThrow(name);
+        UUID ownerUuid = realEstate.getOwnerUuid();
+        if(ownerUuid == null) {
+            ChatUtil.showMessage(player, ChatUtil.NO_OWNER);
+            return;
+        }
+
+        if(!ownerUuid.equals(player.getUniqueId())) {
+            ChatUtil.showMessage(player, ChatUtil.NOT_OWNER);
+            return;
+        }
+
+        // set owner
+        realEstate.setOwnerUuid(null);
+        realEstate.setOwnerName(null);
+
+        // set permission
+        String worldName = realEstate.getWorldName();
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg removeowner -w " + worldName + " " + name + " " + playerName);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "rg flag -w " + worldName + " " + name + " use allow");
+
+        // remove contract
+        removeContract(player, realEstate);
+
+        // send feedback
+        ChatUtil.sellRegion(player, name);
+        SoundUtil.playNoteBlockBell(player);
+    }
+
+    private void removeContract(Player player, RealEstate realEstate) {
+        PlayerInventory inventory = player.getInventory();
+        ContractManager contractManager = plugin.getContractManager();
+        ItemStack contract = contractManager.getContract(realEstate);
+        for(ItemStack item : inventory.getContents()) {
+            if(ItemUtil.compareContractWithTemplate(item, contract)) {
+                inventory.removeItem(item);
+                break;
+            }
         }
     }
 

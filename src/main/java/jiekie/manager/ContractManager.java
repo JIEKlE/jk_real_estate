@@ -2,6 +2,7 @@ package jiekie.manager;
 
 import jiekie.RealEstatePlugin;
 import jiekie.model.RealEstate;
+import jiekie.util.ChatUtil;
 import jiekie.util.NumberUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -78,7 +79,7 @@ public class ContractManager {
         String ownerName = realEstate.getOwnerName();
 
         ItemMeta meta = contract.getItemMeta();
-        meta.setDisplayName(ChatColor.WHITE + "\uA008 [" + realEstate.getName() + "] 계약서");
+        meta.setDisplayName(ChatColor.WHITE + ChatUtil.HOME_EMOJI + " [" + realEstate.getName() + "] 계약서");
         meta.setLore(getContractLore(regionName, price, ownerName));
         if(ownerName != null && !ownerName.isBlank()) {
             meta.addEnchant(Enchantment.LUCK, 1, true);

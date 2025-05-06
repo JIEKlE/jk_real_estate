@@ -15,7 +15,11 @@ public class ChatUtil {
     public static final String TEMPLATE_NOT_REGISTERED = getXPrefix() + "템플릿에 대한 정보를 찾을 수 없습니다.";
     public static final String CONTRACT_NOT_REGISTERED = getXPrefix() + "계약서가 등록되지 않았습니다.";
     public static final String NO_OWNER = getXPrefix() + "소유주가 없는 구역입니다.";
-    public static final String PLAYER_CAN_NOT_OWN_MORE_REAL_ESTATE = getXPrefix() + "플레이어가 더 이상 부동산을 소유할 수 없습니다.";
+    public static final String PLAYER_CAN_NOT_OWN_MORE_REAL_ESTATE = getXPrefix() + "더 이상 부동산을 소유할 수 없습니다.";
+    public static String NOT_ENOUGH_MONEY = getXPrefix() + "소지금이 부족합니다.";
+    public static String SOLD = getXPrefix() + "이미 판매 완료 된 땅입니다.";
+    public static String NOT_OWNER = getXPrefix() + "당신은 해당 부동산의 소유주가 아닙니다.";
+    public static String CAN_NOT_BUY = getXPrefix() + "구매할 수 없는 땅입니다.";
 
     public static String MONEY_NOT_NUMBER = getXPrefix() + "금액은 숫자만 입력할 수 있습니다.";
     public static String MAX_OWNED_COUNT_NOT_NUMBER = getXPrefix() + "개수는 숫자만 입력할 수 있습니다.";
@@ -33,6 +37,9 @@ public class ChatUtil {
     public static final String REMOVE_TEMPLATE = getCheckPrefix() + "계약서 템플릿을 제거했습니다.";
     public static final String GET_CONTRACT = getCheckPrefix() + "계약서를 지급받았습니다.";
 
+    /* emoji */
+    public static final String HOME_EMOJI = "\uA008";
+
     /* prefix */
     public static String getCheckPrefix() {
         return "\uA001 ";
@@ -44,22 +51,6 @@ public class ChatUtil {
 
     public static String getWarnPrefix() {
         return "\uA003 ";
-    }
-
-    public static String getBellPrefix() {
-        return "\uA004 ";
-    }
-
-    public static String getLeftArrowPrefix() {
-        return "\uA005 ";
-    }
-
-    public static String getRightArrowPrefix() {
-        return "\uA006 ";
-    }
-
-    public static String getSpeakerPrefix() {
-        return "\uA007 ";
     }
 
     public static void showMessage(CommandSender sender, String message) {
@@ -104,6 +95,15 @@ public class ChatUtil {
         sender.sendMessage(getWarnPrefix() + regionName + "의 소유권을 회수당했습니다.");
     }
 
+    public static void buyRegion(CommandSender sender, String regionName, String formattedPrice) {
+        sender.sendMessage(getCheckPrefix() + "부동산 [" + regionName + "]을(를) 구매했습니다. " + ChatColor.RED + "( -" + formattedPrice + " )");
+        sender.sendMessage(getWarnPrefix() + "중개사무소에서 부동산 계약서를 받을 수 있습니다.");
+    }
+
+    public static void sellRegion(CommandSender sender, String regionName) {
+        sender.sendMessage(getCheckPrefix() + "부동산 [" + regionName + "]을(를) 판매했습니다.");
+    }
+
     /* info */
     public static void realEstateInfoPrefix(CommandSender sender) {
         sender.sendMessage("");
@@ -138,7 +138,7 @@ public class ChatUtil {
     }
 
     public static void myRealEstateInfo(CommandSender sender, RealEstate realEstate) {
-        sender.sendMessage("　　　\uA008 " + realEstate.getName() + " (" + NumberUtil.getFormattedMoney(realEstate.getPrice()) + ")");
+        sender.sendMessage("　　　" + HOME_EMOJI + " " + realEstate.getName() + " (" + NumberUtil.getFormattedMoney(realEstate.getPrice()) + ")");
     }
 
     public static void horizontalLineSuffix(CommandSender sender) {

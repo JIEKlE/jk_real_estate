@@ -4,6 +4,7 @@ import jiekie.command.ContractCommand;
 import jiekie.command.RealEstateCommand;
 import jiekie.completer.ContractTabCompleter;
 import jiekie.completer.RealEstateTabCompleter;
+import jiekie.event.GuiEvent;
 import jiekie.event.PlayerEvent;
 import jiekie.event.CommandEvent;
 import jiekie.manager.ContractManager;
@@ -29,6 +30,7 @@ public final class RealEstatePlugin extends JavaPlugin {
         // event
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
         getServer().getPluginManager().registerEvents(new CommandEvent(this), this);
+        getServer().getPluginManager().registerEvents(new GuiEvent(this), this);
 
         // command
         getCommand("부동산").setExecutor(new RealEstateCommand(this));
