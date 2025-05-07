@@ -97,9 +97,9 @@ public class ContractManager {
         lore.add(ChatColor.WHITE + "소재지 : " + regionName);
         lore.add(ChatColor.WHITE + "계약금 : " + price);
         if(ownerName == null || ownerName.isBlank())
-            lore.add(ChatColor.WHITE + "판매상태 : \uA009");
+            lore.add(ChatColor.WHITE + "판매상태 : " + ChatUtil.FOR_SALE_EMOJI);
         else
-            lore.add(ChatColor.WHITE + "판매상태 : \uA010");
+            lore.add(ChatColor.WHITE + "판매상태 : " + ChatUtil.SOLD_EMOJI);
 
         // 계약내용
         lore.add("");

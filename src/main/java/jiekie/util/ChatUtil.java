@@ -20,6 +20,8 @@ public class ChatUtil {
     public static String SOLD = getXPrefix() + "이미 판매 완료 된 땅입니다.";
     public static String NOT_OWNER = getXPrefix() + "당신은 해당 부동산의 소유주가 아닙니다.";
     public static String CAN_NOT_BUY = getXPrefix() + "구매할 수 없는 땅입니다.";
+    public static String CAN_NOT_PLACE_CHEST = getXPrefix() + "더 이상 상자를 설치할 수 없습니다.";
+    public static String CAN_NOT_PLACE_FURNACE = getXPrefix() + "더 이상 화로를 설치할 수 없습니다.";
 
     public static String MONEY_NOT_NUMBER = getXPrefix() + "금액은 숫자만 입력할 수 있습니다.";
     public static String MAX_OWNED_COUNT_NOT_NUMBER = getXPrefix() + "개수는 숫자만 입력할 수 있습니다.";
@@ -39,6 +41,8 @@ public class ChatUtil {
 
     /* emoji */
     public static final String HOME_EMOJI = "\uA008";
+    public static final String FOR_SALE_EMOJI = "\uA009";
+    public static final String SOLD_EMOJI = "\uA010";
 
     /* prefix */
     public static String getCheckPrefix() {

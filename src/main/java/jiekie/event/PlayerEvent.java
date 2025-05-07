@@ -1,7 +1,9 @@
 package jiekie.event;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
@@ -13,16 +15,17 @@ import jiekie.util.ChatUtil;
 import jiekie.util.ItemUtil;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -44,6 +47,97 @@ public class PlayerEvent implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         setMaxOwnedCount(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent e) {
+        onChestPlace(e);
+        onFurnacePlace(e);
+    }
+
+    private void onChestPlace(BlockPlaceEvent e) {
+        Block block = e.getBlock();
+        Material type = block.getType();
+        if(type != Material.CHEST && type != Material.BARREL && type != Material.TRAPPED_CHEST) return;
+
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regionManager = container.get(BukkitAdapter.adapt(world));
+        if(regionManager == null) return;
+
+        ApplicableRegionSet regionSet = regionManager.getApplicableRegions(BukkitAdapter.asBlockVector(block.getLocation()));
+        RealEstateManager realEstateManager = plugin.getRealEstateManager();
+        for(ProtectedRegion region : regionSet) {
+            try {
+                String regionName = region.getId();
+                if(!realEstateManager.isRegionExist(regionName)) continue;
+
+                RealEstate realEstate = realEstateManager.getRealEstateOrThrow(regionName);
+                int maxCount = realEstate.getMaxChestCount();
+                int count = countBlocksInRegion(region, world, Material.CHEST)
+                        + countBlocksInRegion(region, world, Material.BARREL)
+                        + countBlocksInRegion(region, world, Material.TRAPPED_CHEST);
+                if(count > maxCount) {
+                    e.setCancelled(true);
+                    ChatUtil.showMessage(player, ChatUtil.CAN_NOT_PLACE_CHEST);
+                }
+
+            } catch (RealEstateException ex) {
+                Bukkit.getLogger().info(ex.getMessage());
+            }
+        }
+    }
+
+    private void onFurnacePlace(BlockPlaceEvent e) {
+        Block block = e.getBlock();
+        Material type = block.getType();
+        if(type != Material.FURNACE && type != Material.BLAST_FURNACE && type != Material.SMOKER) return;
+
+        Player player = e.getPlayer();
+        World world = player.getWorld();
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regionManager = container.get(BukkitAdapter.adapt(world));
+        if(regionManager == null) return;
+
+        ApplicableRegionSet regionSet = regionManager.getApplicableRegions(BukkitAdapter.asBlockVector(block.getLocation()));
+        RealEstateManager realEstateManager = plugin.getRealEstateManager();
+        for(ProtectedRegion region : regionSet) {
+            try {
+                String regionName = region.getId();
+                if(!realEstateManager.isRegionExist(regionName)) continue;
+
+                RealEstate realEstate = realEstateManager.getRealEstateOrThrow(regionName);
+                int maxCount = realEstate.getMaxFurnaceCount();
+                int count = countBlocksInRegion(region, world, Material.FURNACE)
+                            + countBlocksInRegion(region, world, Material.BLAST_FURNACE)
+                            + countBlocksInRegion(region, world, Material.SMOKER);
+                if(count > maxCount) {
+                    e.setCancelled(true);
+                    ChatUtil.showMessage(player, ChatUtil.CAN_NOT_PLACE_FURNACE);
+                }
+
+            } catch (RealEstateException ex) {
+                Bukkit.getLogger().info(ex.getMessage());
+            }
+        }
+    }
+
+    private int countBlocksInRegion(ProtectedRegion region, World world, Material material) {
+        BlockVector3 minPoint = region.getMinimumPoint();
+        BlockVector3 maxPoint = region.getMaximumPoint();
+
+        int count = 0;
+        for(int x = minPoint.getBlockX(); x <= maxPoint.getBlockX(); x++) {
+            for(int y = minPoint.getBlockY() ; y <= maxPoint.getBlockY(); y++) {
+                for(int z = minPoint.getBlockZ() ; z <= maxPoint.getBlockZ(); z++) {
+                    if(world.getBlockAt(x, y, z).getType() == material)
+                        count++;
+                }
+            }
+        }
+
+        return count;
     }
 
     @EventHandler
@@ -127,6 +221,7 @@ public class PlayerEvent implements Listener {
             // enter
             for(String regionName : newRegions) {
                 if(oldRegions.contains(regionName)) continue;
+                if(!realEstateManager.isRegionExist(regionName)) continue;
                 RealEstate realEstate = realEstateManager.getRealEstateOrThrow(regionName);
                 String ownerName = realEstate.getOwnerName();
                 if(ownerName != null && !ownerName.isBlank()) {
@@ -149,7 +244,7 @@ public class PlayerEvent implements Listener {
             playerRegionMap.put(uuid, newRegions);
 
         } catch (RealEstateException ex) {
-
+            Bukkit.getLogger().info(ex.getMessage());
         }
     }
 }
