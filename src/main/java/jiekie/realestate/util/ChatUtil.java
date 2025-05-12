@@ -1,6 +1,6 @@
-package jiekie.util;
+package jiekie.realestate.util;
 
-import jiekie.model.RealEstate;
+import jiekie.realestate.model.RealEstate;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

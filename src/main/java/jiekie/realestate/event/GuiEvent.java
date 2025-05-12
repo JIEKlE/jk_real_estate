@@ -1,12 +1,12 @@
-package jiekie.event;
+package jiekie.realestate.event;
 
-import jiekie.RealEstatePlugin;
-import jiekie.exception.RealEstateException;
-import jiekie.manager.RealEstateManager;
-import jiekie.model.RealEstate;
-import jiekie.model.RealEstateInventoryHolder;
-import jiekie.util.ChatUtil;
-import jiekie.util.ItemUtil;
+import jiekie.realestate.RealEstatePlugin;
+import jiekie.realestate.exception.RealEstateException;
+import jiekie.realestate.manager.RealEstateManager;
+import jiekie.realestate.model.RealEstate;
+import jiekie.realestate.model.RealEstateInventoryHolder;
+import jiekie.realestate.util.ChatUtil;
+import jiekie.realestate.util.ItemUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;

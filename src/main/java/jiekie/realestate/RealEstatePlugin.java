@@ -1,14 +1,14 @@
-package jiekie;
+package jiekie.realestate;
 
-import jiekie.command.ContractCommand;
-import jiekie.command.RealEstateCommand;
-import jiekie.completer.ContractTabCompleter;
-import jiekie.completer.RealEstateTabCompleter;
-import jiekie.event.GuiEvent;
-import jiekie.event.PlayerEvent;
-import jiekie.event.CommandEvent;
-import jiekie.manager.ContractManager;
-import jiekie.manager.RealEstateManager;
+import jiekie.realestate.command.ContractCommand;
+import jiekie.realestate.command.RealEstateCommand;
+import jiekie.realestate.completer.ContractTabCompleter;
+import jiekie.realestate.completer.RealEstateTabCompleter;
+import jiekie.realestate.event.GuiEvent;
+import jiekie.realestate.event.PlayerEvent;
+import jiekie.realestate.event.CommandEvent;
+import jiekie.realestate.manager.ContractManager;
+import jiekie.realestate.manager.RealEstateManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RealEstatePlugin extends JavaPlugin {

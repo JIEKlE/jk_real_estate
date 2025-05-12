@@ -1,15 +1,15 @@
-package jiekie.command;
+package jiekie.realestate.command;
 
-import jiekie.RealEstatePlugin;
-import jiekie.api.NicknameAPI;
-import jiekie.exception.RealEstateException;
-import jiekie.manager.RealEstateManager;
-import jiekie.model.CommandContext;
-import jiekie.model.PlayerNameData;
-import jiekie.model.RealEstate;
-import jiekie.util.ChatUtil;
-import jiekie.util.SoundUtil;
-import jiekie.util.StringUtil;
+import jiekie.nickname.api.NicknameAPI;
+import jiekie.nickname.model.PlayerNameData;
+import jiekie.realestate.RealEstatePlugin;
+import jiekie.realestate.exception.RealEstateException;
+import jiekie.realestate.manager.RealEstateManager;
+import jiekie.realestate.model.CommandContext;
+import jiekie.realestate.model.RealEstate;
+import jiekie.realestate.util.ChatUtil;
+import jiekie.realestate.util.SoundUtil;
+import jiekie.realestate.util.StringUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

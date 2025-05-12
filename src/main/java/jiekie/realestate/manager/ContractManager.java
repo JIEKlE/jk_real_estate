@@ -1,9 +1,9 @@
-package jiekie.manager;
+package jiekie.realestate.manager;
 
-import jiekie.RealEstatePlugin;
-import jiekie.model.RealEstate;
-import jiekie.util.ChatUtil;
-import jiekie.util.NumberUtil;
+import jiekie.realestate.RealEstatePlugin;
+import jiekie.realestate.model.RealEstate;
+import jiekie.realestate.util.ChatUtil;
+import jiekie.realestate.util.NumberUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;

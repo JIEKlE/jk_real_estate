@@ -1,7 +1,7 @@
-package jiekie.event;
+package jiekie.realestate.event;
 
-import jiekie.RealEstatePlugin;
-import jiekie.exception.RealEstateException;
+import jiekie.realestate.RealEstatePlugin;
+import jiekie.realestate.exception.RealEstateException;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

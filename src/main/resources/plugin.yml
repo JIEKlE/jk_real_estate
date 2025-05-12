@@ -1,6 +1,6 @@
 name: jk_real_estate
 version: '${project.version}'
-main: jiekie.RealEstatePlugin
+main: jiekie.realestate.RealEstatePlugin
 api-version: '1.20'
 authors: [Jiekie]
 description: 부동산 플러그인
@@ -10,10 +10,10 @@ commands:
   부동산:
     description: 부동산 관련 명령어
     usage: /부동산
-    tab-completer: jiekie.completer.RealEstateTabCompleter
+    tab-completer: jiekie.realestate.completer.RealEstateTabCompleter
   계약서:
     description: 부동산 계약서 관련 명령어
     usage: /계약서
-    tab-completer: jiekie.completer.ContractTabCompleter
+    tab-completer: jiekie.realestate.completer.ContractTabCompleter
     permission: jk.contract.command
     permission-message: ''

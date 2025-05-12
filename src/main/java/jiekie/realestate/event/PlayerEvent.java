@@ -1,4 +1,4 @@
-package jiekie.event;
+package jiekie.realestate.event;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -7,12 +7,12 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import jiekie.RealEstatePlugin;
-import jiekie.exception.RealEstateException;
-import jiekie.manager.RealEstateManager;
-import jiekie.model.RealEstate;
-import jiekie.util.ChatUtil;
-import jiekie.util.ItemUtil;
+import jiekie.realestate.RealEstatePlugin;
+import jiekie.realestate.exception.RealEstateException;
+import jiekie.realestate.manager.RealEstateManager;
+import jiekie.realestate.model.RealEstate;
+import jiekie.realestate.util.ChatUtil;
+import jiekie.realestate.util.ItemUtil;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;

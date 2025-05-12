@@ -1,11 +1,11 @@
-package jiekie.command;
+package jiekie.realestate.command;
 
-import jiekie.RealEstatePlugin;
-import jiekie.exception.RealEstateException;
-import jiekie.manager.RealEstateManager;
-import jiekie.model.RealEstate;
-import jiekie.util.ChatUtil;
-import jiekie.util.SoundUtil;
+import jiekie.realestate.RealEstatePlugin;
+import jiekie.realestate.exception.RealEstateException;
+import jiekie.realestate.manager.RealEstateManager;
+import jiekie.realestate.model.RealEstate;
+import jiekie.realestate.util.ChatUtil;
+import jiekie.realestate.util.SoundUtil;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

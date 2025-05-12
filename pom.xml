@@ -83,13 +83,13 @@
       <dependency>
           <groupId>com.github.JIEKlE</groupId>
           <artifactId>jk_economy</artifactId>
-          <version>v1.0.3</version>
+          <version>v1.0.4</version>
           <scope>provided</scope>
       </dependency>
       <dependency>
           <groupId>com.github.JIEKlE</groupId>
           <artifactId>jk_nickname</artifactId>
-          <version>v1.0.6</version>
+          <version>v1.0.8</version>
           <scope>provided</scope>
       </dependency>
       <dependency>

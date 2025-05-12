@@ -1,7 +1,7 @@
-package jiekie.completer;
+package jiekie.realestate.completer;
 
-import jiekie.RealEstatePlugin;
-import jiekie.api.NicknameAPI;
+import jiekie.nickname.api.NicknameAPI;
+import jiekie.realestate.RealEstatePlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;

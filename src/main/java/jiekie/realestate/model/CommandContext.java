@@ -1,4 +1,4 @@
-package jiekie.model;
+package jiekie.realestate.model;
 
 import org.bukkit.command.CommandSender;
 

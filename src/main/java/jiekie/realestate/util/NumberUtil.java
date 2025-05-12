@@ -1,4 +1,4 @@
-package jiekie.util;
+package jiekie.realestate.util;
 
 import java.text.NumberFormat;
 import java.util.Locale;

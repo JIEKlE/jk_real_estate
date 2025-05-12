@@ -1,4 +1,4 @@
-package jiekie.util;
+package jiekie.realestate.util;
 
 import org.bukkit.ChatColor;
 
