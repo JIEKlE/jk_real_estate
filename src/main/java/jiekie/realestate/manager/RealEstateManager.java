@@ -121,11 +121,8 @@ public class RealEstateManager {
             inventory.setItem(slot, plugin.getContractManager().getContract(realEstate));
         }
 
-        if(page > 1)
-            inventory.setItem(45, createControlItem(ChatColor.YELLOW + "이전 페이지", 190));
-
-        if(page < maxPage)
-            inventory.setItem(53, createControlItem(ChatColor.YELLOW + "다음 페이지", 191));
+        inventory.setItem(45, createControlItem(ChatColor.YELLOW + "이전 페이지", 301));
+        inventory.setItem(53, createControlItem(ChatColor.YELLOW + "다음 페이지", 302));
 
         player.openInventory(inventory);
     }

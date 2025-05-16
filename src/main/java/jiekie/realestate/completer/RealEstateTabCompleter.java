@@ -31,7 +31,7 @@ public class RealEstateTabCompleter implements TabCompleter {
                         , "소유목록", "소유개수설정", "상자개수설정", "화로개수설정", "정보"
                         , "도움말");
             else
-                return Arrays.asList("열기", "소유목록", "도움말");
+                return Arrays.asList("소유목록", "도움말");
         }
 
         String commandType = args[0];
