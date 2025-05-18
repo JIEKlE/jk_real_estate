@@ -112,6 +112,14 @@ public class RealEstateManager {
         int size = 54;
         Inventory inventory = Bukkit.createInventory(holder, size, chestName);
 
+        inventory.setItem(45, createControlItem(ChatColor.YELLOW + "이전 페이지", 301));
+        inventory.setItem(53, createControlItem(ChatColor.YELLOW + "다음 페이지", 302));
+
+        if(realEstateMap.isEmpty()) {
+            player.openInventory(inventory);
+            return;
+        }
+
         List<Map.Entry<String, RealEstate>> sortedRealEstates = realEstateMap.entrySet()
                                                                             .stream()
                                                                             .sorted(Map.Entry.comparingByKey())
@@ -120,9 +128,6 @@ public class RealEstateManager {
             RealEstate realEstate = sortedRealEstates.get(i).getValue();
             inventory.setItem(slot, plugin.getContractManager().getContract(realEstate));
         }
-
-        inventory.setItem(45, createControlItem(ChatColor.YELLOW + "이전 페이지", 301));
-        inventory.setItem(53, createControlItem(ChatColor.YELLOW + "다음 페이지", 302));
 
         player.openInventory(inventory);
     }
